@@ -118,26 +118,32 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"YSu3":[function(require,module,exports) {
-var div = document.createElement("div");
-div.setAttribute("style", "height:70%");
-div.innerHTML = "<div id=\"myModal\" class=\"modal\">\n       \n         <div class=\"modal-content\">\n           <span class=\"close\">&times;</span>\n           <p>Some text in the Modal..</p>\n         </div>\n       \n       </div>";
-document.body.appendChild(div);
-var modal = document.getElementById("myModal"); // Get the button that opens the modal
+var notes = [];
+chrome.storage.local.get('notes', function (result) {
+  notes = result.notes;
+});
+var wrapperDiv = document.createElement("div");
+wrapperDiv.setAttribute("style", "position: absolute; left: 0px; top: 0px; background-color: rgb(255, 255, 255); opacity: 0.5; z-index: 2000; height: 1083px; width: 100%;");
+var iframeElement = document.createElement("iframe");
+iframeElement.setAttribute("style", "width: 100%; height: 100%;");
+wrapperDiv.appendChild(iframeElement);
+var modalDialogParentDiv = document.createElement("div");
+modalDialogParentDiv.setAttribute("style", "position: absolute; width: 350px; border: 1px solid rgb(51, 102, 153); padding: 10px; background-color: rgb(255, 255, 255); z-index: 2001; overflow: auto; top: 149px; left: 497px;");
+var closeBtn = document.createElement("button");
+closeBtn.innerText = "X";
+closeBtn.setAttribute("style", "float:right");
+var modalText = document.createElement("span");
+modalText.innerText = notes.forEach(function (val) {
+  return val;
+});
+modalDialogParentDiv.appendChild(closeBtn);
+modalDialogParentDiv.appendChild(modalText);
+document.body.appendChild(wrapperDiv);
+document.body.appendChild(modalDialogParentDiv);
 
-var btn = document.getElementById("myBtn"); // Get the <span> element that closes the modal
-
-var span = document.getElementsByClassName("close")[0];
-modal.style.display = "block"; // When the user clicks on <span> (x), close the modal
-
-span.onclick = function () {
-  modal.style.display = "none";
-}; // When the user clicks anywhere outside of the modal, close it
-
-
-window.onclick = function (event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
+closeBtn.onclick = function () {
+  document.body.removeChild(wrapperDiv);
+  document.body.removeChild(modalDialogParentDiv);
 };
 },{}]},{},["YSu3"], null)
 //# sourceMappingURL=/content-script.js.map
