@@ -1,0 +1,26 @@
+{
+  "name": "Highlight Notebook",
+  "description": "Base Level Extension",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action" : {
+    "default_icon" : "Images/clipboard.png"
+},
+"content_scripts": [{
+  "js": [ "content-script.js"],
+  "matches": ["https://*/","http://*/"]
+ }],
+ "host_permissions": [
+  "https://*/",
+  "http://*/"
+],
+  "permissions": [
+    "contextMenus",
+    "storage",
+    "scripting",
+    "tabs"
+],
+  "background": {
+	  "service_worker": "background.js"
+  }
+}
