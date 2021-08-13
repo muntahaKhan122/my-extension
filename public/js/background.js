@@ -47,6 +47,7 @@ chrome.storage.local.get('notes', function(result) {
 
 }
 function openModal(tab){
+	
 	chrome.scripting.executeScript({
 		target: { tabId: tab.id },
 		files: ['content-script.js']
