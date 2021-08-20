@@ -19,7 +19,8 @@ chrome.contextMenus.onClicked.addListener(function(callData,tabs){
 	{ 		saveDataToStorage(callData.selectionText);			  
 	}
 	if(callData.menuItemId == "showContent")
-	{ 		openModal(tabs);			  
+	{ 	
+		openModal(tabs);			  
 	}
 }
 )

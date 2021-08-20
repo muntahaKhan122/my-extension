@@ -881,7 +881,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 var regeneratorRuntime = require("regenerator-runtime");
 
-var notes = ['a', 'b', 'c'];
+function readLocalStorage(key) {
+  return new Promise(function (resolve, reject) {
+    chrome.storage.local.get([key], function (result) {
+      if (result) {
+        resolve(result.notes);
+      } else {
+        reject();
+      }
+    });
+  });
+}
+
+var notes;
 
 function getNotes() {
   return _getNotes.apply(this, arguments);
@@ -889,17 +901,54 @@ function getNotes() {
 
 function _getNotes() {
   _getNotes = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    var wrapperDiv, iframeElement, modalDialogParentDiv, btnDiv, closeBtn, div, modalHeader;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return chrome.storage.local.get('notes', function (result) {
-              notes = result.notes;
-              console.log("console", notes);
-            });
+            return readLocalStorage('notes');
 
           case 2:
+            notes = _context.sent;
+            wrapperDiv = document.createElement("div");
+            wrapperDiv.setAttribute("style", "position: absolute; left: 0px; top: 0px; background-color: rgb(255, 255, 255); opacity: 0.5; z-index: 2000; height: 1083px; width: 100%;");
+            iframeElement = document.createElement("iframe");
+            iframeElement.setAttribute("style", "width: 100%; height: 100%;");
+            wrapperDiv.appendChild(iframeElement);
+            modalDialogParentDiv = document.createElement("div");
+            modalDialogParentDiv.setAttribute("style", "position: absolute; width: 350px; border: 1px solid rgb(51, 102, 153); padding: 10px; background-color: rgb(255, 255, 255); z-index: 2001; overflow: auto; top: 149px; left: 497px;");
+            btnDiv = document.createElement("div");
+            btnDiv.className = "container";
+            btnDiv.setAttribute("style", "text-align: center;");
+            closeBtn = document.createElement("a");
+            closeBtn.className = "btn btn-default";
+            closeBtn.innerText = "x";
+            closeBtn.href = "#";
+            closeBtn.setAttribute("style", "float:right; width:20px; height:20px; color: black");
+            btnDiv.appendChild(closeBtn);
+            modalDialogParentDiv.appendChild(btnDiv);
+            div = document.createElement("div");
+            document.body.appendChild(div);
+            modalHeader = document.createElement("div");
+            modalHeader.innerHTML = 'Notes';
+            modalHeader.setAttribute('style', 'align-items: center;font-weight: bold;font-size: large;');
+            modalDialogParentDiv.appendChild(modalHeader);
+            notes.forEach(function (val) {
+              var modalText = document.createElement("div");
+              modalText.innerText = ' - ' + val;
+              modalText.setAttribute('style', 'margin-top:20px');
+              modalDialogParentDiv.appendChild(modalText);
+            });
+            document.body.appendChild(wrapperDiv);
+            document.body.appendChild(modalDialogParentDiv);
+
+            closeBtn.onclick = function () {
+              document.body.removeChild(wrapperDiv);
+              document.body.removeChild(modalDialogParentDiv);
+            };
+
+          case 30:
           case "end":
             return _context.stop();
         }
@@ -909,32 +958,6 @@ function _getNotes() {
   return _getNotes.apply(this, arguments);
 }
 
-getNotes();
-var wrapperDiv = document.createElement("div");
-wrapperDiv.setAttribute("style", "position: absolute; left: 0px; top: 0px; background-color: rgb(255, 255, 255); opacity: 0.5; z-index: 2000; height: 1083px; width: 100%;");
-var iframeElement = document.createElement("iframe");
-iframeElement.setAttribute("style", "width: 100%; height: 100%;");
-wrapperDiv.appendChild(iframeElement);
-var modalDialogParentDiv = document.createElement("div");
-modalDialogParentDiv.setAttribute("style", "position: absolute; width: 350px; border: 1px solid rgb(51, 102, 153); padding: 10px; background-color: rgb(255, 255, 255); z-index: 2001; overflow: auto; top: 149px; left: 497px;");
-var closeBtn = document.createElement("button");
-closeBtn.innerText = "X";
-closeBtn.setAttribute("style", "float:right");
-modalDialogParentDiv.appendChild(closeBtn);
-var div = document.createElement("div");
-document.body.appendChild(div);
-notes.forEach(function (val) {
-  var modalText = document.createElement("div");
-  modalText.innerText = val;
-  console.log("here", val);
-  modalDialogParentDiv.appendChild(modalText);
-});
-document.body.appendChild(wrapperDiv);
-document.body.appendChild(modalDialogParentDiv);
-
-closeBtn.onclick = function () {
-  document.body.removeChild(wrapperDiv);
-  document.body.removeChild(modalDialogParentDiv);
-};
+getNotes().then(function () {});
 },{"regenerator-runtime":"VuXv"}]},{},["YSu3"], null)
 //# sourceMappingURL=/content-script.js.map
